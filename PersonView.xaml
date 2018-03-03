@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="_02Vasylenko.PersonView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:_02Vasylenko"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="600">
+    <UserControl.DataContext>
+        <local:PersonViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+
+        <ControlTemplate x:Key="TextBoxErrorTemplate">
+            <DockPanel LastChildFill="True">
+                <TextBlock DockPanel.Dock="Bottom" Foreground="Red" FontSize="6pt" 
+                           Text="{Binding ElementName=MyAdorner,Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"/>
+                <Border BorderBrush="Red" BorderThickness="1" Width="120" >
+                    <AdornedElementPlaceholder Name="MyAdorner" />
+                </Border>
+            </DockPanel>
+        </ControlTemplate>
+    </UserControl.Resources>
+    <Grid Name="GridPersonView">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="1" Name="GridPatientControl" 
+              HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*" />
+                <RowDefinition Height="10*" />
+                <RowDefinition Height="10*" />
+                <RowDefinition Height="5*"  />
+                <RowDefinition Height="10*" />
+            </Grid.RowDefinitions>
+
+            <Label Name="LblLastName" Content="Last Name:" 
+               Grid.Row="0" Grid.Column="0" 
+               HorizontalAlignment="Right" />
+            <Label Name="LblName" Content="Name :"
+               Grid.Row="1" Grid.Column="0" 
+               HorizontalAlignment="Right" />
+            <Label Name="LblMobileNumber" Content="Email:"
+               Grid.Row="2" Grid.Column="0" 
+               HorizontalAlignment="Right" />
+            <DatePicker SelectedDate="{Binding DateOfBirth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="36,0,-32,-6" Grid.Row="4" Grid.ColumnSpan="2"
+                        Grid.Column="0" />
+            <TextBox Name="TbxId" 
+                 Grid.Row="0" Grid.Column="1" 
+                 HorizontalAlignment="Left"
+                 Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+            </TextBox>
+            <TextBox Name="TbxLastName" 
+                     Grid.Row="0" Grid.Column="1" 
+                     HorizontalAlignment="Left" 
+                     Text="{Binding Path=LastName}"/>
+            <TextBox Name="TbxName" 
+                     Grid.Row="1" Grid.Column="1" 
+                     HorizontalAlignment="Left" 
+                     Text="{Binding Path=Name}"/>
+            <TextBox Name="TbxEmail" 
+                      Grid.Row="2" Grid.Column="1" 
+                      HorizontalAlignment="Left" 
+                      Text="{Binding Path=Email}"/>
+
+            <Grid Name="GridBtns" 
+                  Grid.Row="4" Grid.ColumnSpan="2" 
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Name="BtnAdd" Content="Proceded"
+                    Grid.Column="1" 
+                    HorizontalAlignment="Center" 
+                    Command="{Binding AddPersonCmd}" Margin="7,28,-9,-28" Grid.ColumnSpan="2"/>
+            </Grid>
+
+        </Grid>
+        <DataGrid ItemsSource="{Binding Persons, Mode=OneWay}" AutoGenerateColumns="False" Grid.Column="3" SelectionChanged="DataGrid_SelectionChanged" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Last name" Binding="{Binding LastName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="First name" Binding="{Binding Name}"></DataGridTextColumn>
+                <DataGridTextColumn Header="E-mail" Binding="{Binding Email}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Date of birth" Binding="{Binding DateOfBirth}"></DataGridTextColumn>
+                <DataGridTextColumn Header="isAdult" Binding="{Binding IsAdult}"></DataGridTextColumn>
+                <DataGridTextColumn Header="SunSign" Binding="{Binding SunSign}"></DataGridTextColumn>
+                <DataGridTextColumn Header="ChineseSign" Binding="{Binding ChineseSign}"></DataGridTextColumn>
+                <DataGridTextColumn Header="isBirthday" Binding="{Binding IsBirthday}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+</Grid>
+
+</UserControl>
