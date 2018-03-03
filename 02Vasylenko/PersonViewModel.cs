@@ -24,6 +24,13 @@ namespace _02Vasylenko
             AddPersonCmd = new RelayCommand(Add, CanAdd);
             _showLoaderAction = showLoader;
         }
+        public PersonViewModel()
+        {
+            domObject = new Person();
+            PersonManager = new PersonManager();
+            _Persons = new ObservableCollection<Person>();
+            AddPersonCmd = new RelayCommand(Add, CanAdd);
+        }
         public string LastName
         {
             get { return domObject.LastName; }
@@ -101,20 +108,19 @@ namespace _02Vasylenko
             _showLoaderAction.Invoke(true);
             await Task.Run((() =>
                             {
-                                var person = new Person { LastName = LastName, Name = Name, Email = Email, DateOfBirth = DateOfBirth };
-                                if (person.IsReal)
-                                {
-                                    Persons.Add(person);
-                                    ResetPerson();
-                                    if (person.DateOfBirth.DayOfYear.Equals(DateTime.Today.DayOfYear)) MessageBox.Show("HappyBirthday");
-                                }
-                                else
-                                {
-                                    MessageBox.Show("You can`t exist in real world. Check daybirth field, please.");
-                                }
                                 Thread.Sleep(2000);
                             }));
-            
+            var person = new Person { LastName = LastName, Name = Name, Email = Email, DateOfBirth = DateOfBirth };
+            if (person.IsReal)
+            {
+                Persons.Add(person);
+                ResetPerson();
+                if (person.DateOfBirth.DayOfYear.Equals(DateTime.Today.DayOfYear)) MessageBox.Show("HappyBirthday");
+            }
+            else
+            {
+                MessageBox.Show("You can`t exist in real world. Check daybirth field, please.");
+            }
 
             _showLoaderAction.Invoke(false);
         }

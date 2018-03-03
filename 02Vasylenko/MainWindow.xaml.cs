@@ -21,14 +21,10 @@ namespace _02Vasylenko
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ImageAwesome _loader;
         public MainWindow()
         {
             InitializeComponent();
         }
-        public void ShowLoader(bool isShow)
-        {
-            LoaderHelper.OnRequestLoader(MainGrid, ref _loader, isShow);
-        }
+       
     }
 }
