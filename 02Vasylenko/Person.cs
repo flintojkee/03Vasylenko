@@ -1,15 +1,67 @@
-﻿using System;
+﻿
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace _02Vasylenko
 {
     public class Person
     {
         
-        public string Name { get; set; }
+        public string Name {
+            get { return _firstName; }
+            set
+            {
+                if (value == string.Empty)
+                {
+                    throw new IlligalInputException("First name");
+                }
+                else
+                {
+                    _firstName = value;
+                }
+                
+            }
+        }
 
-        public string LastName { get; set; }
+        public string LastName {
+            get { return _lastName; }
+            set
+            {
+                if (value == string.Empty)
+                {
+                    throw new IlligalInputException("Last name");
+                }
+                else
+                {
+                    _lastName = value;
+                }
 
-        public string Email { get; set; }
+            }
+        }
+
+        public string Email
+        {
+            get { return _email; }
+            set
+            {
+                if (value==string.Empty)
+                {
+                    throw new IlligalInputException("Email");
+                    
+                }
+                else
+                {
+                    if (new EmailAddressAttribute().IsValid(value))
+                    {
+                        _email = value;
+                    }
+                     else
+                        throw new IlligalEmailException(value);
+                }
+
+            }
+        }
 
         internal bool IsAdult
         {
@@ -48,15 +100,17 @@ namespace _02Vasylenko
         private string _chineseSign;
         private bool _isBirthday;
         private DateTime _birthDate;
+        private string _email;
+        private string _firstName;
+        private string _lastName;
         public DateTime DateOfBirth {
             get { return _birthDate; }
             set
             {
-
                 int check = DateTime.Today.Year - value.Year;
                 if (DateTime.Today.Date < value.Date || check > 135)
                 {
-                    throw new IlligalException("Date");
+                    throw new IlligalDateException(value.ToString(CultureInfo.InvariantCulture)+" ");
                 }
                 else
                 {
@@ -210,10 +264,22 @@ namespace _02Vasylenko
                 _isReal = true;
             }
         }
-        internal class IlligalException : Exception
+        internal class IlligalDateException : Exception
         {
-            public IlligalException(string error )
-                : base("Error illigal format of"+ error)
+            public IlligalDateException(string error )
+                : base("Error: illigal format of date: "+ error+"You can`t be older than 135 years or have not born yet")
+            { }
+        }
+        internal class IlligalEmailException : Exception
+        {
+            public IlligalEmailException(string error)
+                : base("Error: illigal format of email: " + error)
+            { }
+        }
+        internal class IlligalInputException : Exception
+        {
+            public IlligalInputException(string error)
+                : base("Error: this field" + error+"is required")
             { }
         }
     }

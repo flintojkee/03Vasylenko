@@ -20,7 +20,7 @@ namespace _02Vasylenko
             _domObject = new Person();
             new PersonManager();
             _persons = new ObservableCollection<Person>();
-            AddPersonCmd = new RelayCommand(Add, CanAdd);
+            AddPersonCmd = new RelayCommand(Add);
             _showLoaderAction = showLoader;
         }
         public PersonViewModel()
@@ -28,7 +28,7 @@ namespace _02Vasylenko
             _domObject = new Person();
             new PersonManager();
             _persons = new ObservableCollection<Person>();
-            AddPersonCmd = new RelayCommand(Add, CanAdd);
+            AddPersonCmd = new RelayCommand(Add);
         }
         public string LastName
         {
@@ -75,10 +75,6 @@ namespace _02Vasylenko
         public ObservableCollection<Person> Persons { get { return _persons; } }
         public ICommand AddPersonCmd { get; }
 
-        public bool CanAdd(object obj)
-        {
-            return LastName != String.Empty&& Name !=String.Empty && Email != String.Empty&& DateOfBirth!= DateTime.MinValue;
-        }
         public async void Add(object obj)
         {
             _showLoaderAction.Invoke(true);
