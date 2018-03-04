@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace _02Vasylenko
         }
         public string LastName
         {
-            get { return _domObject.LastName; }
+            get => _domObject.LastName;
             set
             {
                 _domObject.LastName = value;
@@ -41,7 +42,7 @@ namespace _02Vasylenko
         }
         public string Name
         {
-            get { return _domObject.Name; }
+            get => _domObject.Name;
             set
             {
                 _domObject.Name = value;
@@ -50,8 +51,8 @@ namespace _02Vasylenko
         }
        public string Email
         {
-            get { return _domObject.Email; }
-            set
+            get => _domObject.Email;
+           set
             {
                 _domObject.Email = value;
                 OnPropertyChanged("Email");
@@ -60,7 +61,7 @@ namespace _02Vasylenko
 
         public DateTime DateOfBirth
         {
-            get { return _domObject.DateOfBirth; }
+            get => _domObject.DateOfBirth;
             set
             {
                 _domObject.DateOfBirth = value;
@@ -78,23 +79,39 @@ namespace _02Vasylenko
         public async void Add(object obj)
         {
             _showLoaderAction.Invoke(true);
-            try
-            {
+            
                 await Task.Run((() =>
-                {
+                { 
                     Thread.Sleep(2000);
                 }));
+            try
+            {
+                if (LastName == string.Empty)
+                {
+                    throw new IlligalInputException("Last Name");
+                }
+                if (Name == string.Empty)
+                {
+                    throw new IlligalInputException("Last Name");
+                }
+                if (!new EmailAddressAttribute().IsValid(Email))
+                {
+                    throw new IlligalEmailException(Email);
+                }
+                int check = DateTime.Today.Year - DateOfBirth.Year;
+                if (DateTime.Today.Date < DateOfBirth.Date || check > 135)
+                {
+                    throw new IlligalDateException(DateOfBirth.ToString(CultureInfo.InvariantCulture) + " ");
+                }
                 var person = new Person { LastName = LastName, Name = Name, Email = Email, DateOfBirth = DateOfBirth };
-                        Persons.Add(person);
-                        ResetPerson();
-                        if (person.DateOfBirth.DayOfYear.Equals(DateTime.Today.DayOfYear)) MessageBox.Show("HappyBirthday");
+                Persons.Add(person);
+                if (person.DateOfBirth.DayOfYear.Equals(DateTime.Today.DayOfYear)) MessageBox.Show("HappyBirthday");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-
-
+            ResetPerson();
             _showLoaderAction.Invoke(false);
         }
 
@@ -110,6 +127,24 @@ namespace _02Vasylenko
         public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        internal class IlligalInputException : Exception
+        {
+            public IlligalInputException(string error)
+                : base("Error: this field" + error + " is required")
+            { }
+        }
+        internal class IlligalDateException : Exception
+        {
+            public IlligalDateException(string error)
+                : base("Error: illigal format of date: " + error + "You can`t be older than 135 years or have not born yet")
+            { }
+        }
+        internal class IlligalEmailException : Exception
+        {
+            public IlligalEmailException(string error)
+                : base("Error: illigal format of email: " + error)
+            { }
         }
     }
 }

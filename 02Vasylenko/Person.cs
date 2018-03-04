@@ -1,69 +1,18 @@
 ﻿
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 
 namespace _02Vasylenko
 {
     public class Person
     {
         
-        public string Name {
-            get { return _firstName; }
-            set
-            {
-                if (value == string.Empty)
-                {
-                    throw new IlligalInputException("First name");
-                }
-                else
-                {
-                    _firstName = value;
-                }
-                
-            }
-        }
+        public string Name { get; set; }
 
-        public string LastName {
-            get { return _lastName; }
-            set
-            {
-                if (value == string.Empty)
-                {
-                    throw new IlligalInputException("Last name");
-                }
-                else
-                {
-                    _lastName = value;
-                }
+        public string LastName { get; set; }
 
-            }
-        }
+        public string Email { get; set; }
 
-        public string Email
-        {
-            get { return _email; }
-            set
-            {
-                if (value==string.Empty)
-                {
-                    throw new IlligalInputException("Email");
-                    
-                }
-                else
-                {
-                    if (new EmailAddressAttribute().IsValid(value))
-                    {
-                        _email = value;
-                    }
-                     else
-                        throw new IlligalEmailException(value);
-                }
-
-            }
-        }
-
-        internal bool IsAdult
+        public bool IsAdult
         {
             get
             {
@@ -71,14 +20,14 @@ namespace _02Vasylenko
                 return _age >= 18;
             }
         }
-        internal string SunSign
+        public string SunSign
         {
             get {
                 CalculateZodiacs();
                 return _sunSign;
             }
         }
-       internal string ChineseSign
+        public string ChineseSign
         {
             get
             {
@@ -87,11 +36,11 @@ namespace _02Vasylenko
             }
         }
 
-        internal bool IsBirthday
+        public bool IsBirthday
         {
             get
             {
-                isBirthday();
+                if (DateOfBirth.Day == DateTime.Today.Day) _isBirthday = true;
                 return _isBirthday;
             }
         }
@@ -99,28 +48,9 @@ namespace _02Vasylenko
         private string _sunSign;
         private string _chineseSign;
         private bool _isBirthday;
-        private DateTime _birthDate;
-        private string _email;
-        private string _firstName;
-        private string _lastName;
-        public DateTime DateOfBirth {
-            get { return _birthDate; }
-            set
-            {
-                int check = DateTime.Today.Year - value.Year;
-                if (DateTime.Today.Date < value.Date || check > 135)
-                {
-                    throw new IlligalDateException(value.ToString(CultureInfo.InvariantCulture)+" ");
-                }
-                else
-                {
-                    _birthDate = value;
-                }
-               
-            }
-        }
+        public DateTime DateOfBirth { get; set; }
+
         private int _age;
-        private bool _isReal;
         public Person(string name, string lastName, string email, DateTime dateOfBirth)
         {
             Name = name;
@@ -145,15 +75,6 @@ namespace _02Vasylenko
         public Person(DateTime dateOfBirth)
         {
             DateOfBirth = dateOfBirth;
-        }
-
-        public bool IsReal
-        {
-            get
-            {
-                isReal();
-                return _isReal;
-            }
         }
 
         public Person()
@@ -251,37 +172,6 @@ namespace _02Vasylenko
                 }
             }
 
-        private void isBirthday()
-        {
-            if(DateOfBirth.Day == DateTime.Today.Day)_isBirthday = true;
-        }
-        private void isReal()
-        {
-            int check = DateTime.Today.Year - DateOfBirth.Year;
-            if (DateTime.Today.Date < DateOfBirth.Date || check > 135) _isReal = false;
-            else
-            {
-                _isReal = true;
-            }
-        }
-        internal class IlligalDateException : Exception
-        {
-            public IlligalDateException(string error )
-                : base("Error: illigal format of date: "+ error+"You can`t be older than 135 years or have not born yet")
-            { }
-        }
-        internal class IlligalEmailException : Exception
-        {
-            public IlligalEmailException(string error)
-                : base("Error: illigal format of email: " + error)
-            { }
-        }
-        internal class IlligalInputException : Exception
-        {
-            public IlligalInputException(string error)
-                : base("Error: this field" + error+"is required")
-            { }
-        }
     }
         
     }
