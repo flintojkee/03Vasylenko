@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _02Vasylenko
 {
@@ -16,7 +11,7 @@ namespace _02Vasylenko
 
         public string Email { get; set; }
 
-        public bool IsAdult
+        internal bool IsAdult
         {
             get
             {
@@ -24,14 +19,14 @@ namespace _02Vasylenko
                 return _age >= 18;
             }
         }
-        public string SunSign
+        internal string SunSign
         {
             get {
                 CalculateZodiacs();
                 return _sunSign;
             }
         }
-        public string ChineseSign
+       internal string ChineseSign
         {
             get
             {
@@ -40,7 +35,7 @@ namespace _02Vasylenko
             }
         }
 
-        public bool IsBirthday
+        internal bool IsBirthday
         {
             get
             {
@@ -52,10 +47,26 @@ namespace _02Vasylenko
         private string _sunSign;
         private string _chineseSign;
         private bool _isBirthday;
-        public DateTime DateOfBirth { get; set; }
+        private DateTime _birthDate;
+        public DateTime DateOfBirth {
+            get { return _birthDate; }
+            set
+            {
+
+                int check = DateTime.Today.Year - value.Year;
+                if (DateTime.Today.Date < value.Date || check > 135)
+                {
+                    throw new IlligalException("Date");
+                }
+                else
+                {
+                    _birthDate = value;
+                }
+               
+            }
+        }
         private int _age;
         private bool _isReal;
-
         public Person(string name, string lastName, string email, DateTime dateOfBirth)
         {
             Name = name;
@@ -198,6 +209,12 @@ namespace _02Vasylenko
             {
                 _isReal = true;
             }
+        }
+        internal class IlligalException : Exception
+        {
+            public IlligalException(string error )
+                : base("Error illigal format of"+ error)
+            { }
         }
     }
         
